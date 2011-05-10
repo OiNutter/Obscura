@@ -27,6 +27,7 @@
       if (keepProportions == null) {
         keepProportions = true;
       }
+      this.load();
       if (Object.prototype.toString.call(scale) === '[object Array]') {
         scale = {
           w: scale[0],
@@ -38,8 +39,15 @@
           h: scale
         };
       }
-      scale.w = typeof scale.w === 'string' && scale.w.match(/%/) ? this.image.width * (parseFloat(scale.w) / 100) : parseFloat(scale.w);
-      scale.h = typeof scale.h === 'string' && scale.h.match(/%/) ? this.image.height * (parseFloat(scale.h) / 100) : parseFloat(scale.h);
+      scale.w = typeof scale.w === 'string' && scale.w.match(/%/) ? this.canvas.width * (parseFloat(scale.w) / 100) : parseFloat(scale.w);
+      scale.h = typeof scale.h === 'string' && scale.h.match(/%/) ? this.canvas.height * (parseFloat(scale.h) / 100) : parseFloat(scale.h);
+      if (keepProportions) {
+        if (scale.w > scale.h || (scale.w === scale.h && this.canvas.height > this.canvas.width)) {
+          scale.h = (scale.w / this.canvas.width) * this.canvas.height;
+        } else if (scale.h > scale.w || (scale.h === scale.w && this.canvas.width > this.canvas.height)) {
+          scale.w = (scale.h / this.canvas.height) * this.canvas.width;
+        }
+      }
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
       return this.load(0, 0, scale.w, scale.h);
     }, this);
