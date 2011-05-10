@@ -21,14 +21,14 @@ obscura = (img,target) ->
 			scale = 
 				w: scale[0]
 				h:scale[1]
-		else if typeof scale != 'object'
+		else if typeof scale isnt 'object'
 			scale = 
 				w:scale
 				h:scale
 				
 		#convert percentages to actual values
-		scale.w = if typeof scale.w == 'string' and scale.w.match(/%/) then @image.width * (parseFloat(scale.w)/100) else parseFloat(scale.w) 
-		scale.h = if typeof scale.h == 'string' and scale.h.match(/%/) then @image.height * (parseFloat(scale.h)/100) else parseFloat(scale.h)
+		scale.w = if typeof scale.w is 'string' and scale.w.match(/%/) then @image.width * (parseFloat(scale.w)/100) else parseFloat(scale.w) 
+		scale.h = if typeof scale.h is 'string' and scale.h.match(/%/) then @image.height * (parseFloat(scale.h)/100) else parseFloat(scale.h)
 				
 		@context.clearRect(0,0,@canvas.width,@canvas.height)
 		@load(0,0,scale.w,scale.h)
