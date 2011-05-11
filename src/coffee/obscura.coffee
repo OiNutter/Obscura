@@ -21,8 +21,8 @@ obscura = (img,target) ->
 	###
 	resizes an image
 	###	
-	@resize = (scale,keepProportions=true) =>
-		
+	@resize = (scale,keepProportions=true,crop=false) =>
+			
 		#check type of scale and convert it to an object if not already
 		if Object.prototype.toString.call(scale) is '[object Array]'
 			scale = 
@@ -37,14 +37,26 @@ obscura = (img,target) ->
 		scale.w = if typeof scale.w is 'string' and scale.w.match(/%/) then @canvas.width * (parseFloat(scale.w)/100) else parseFloat(scale.w) 
 		scale.h = if typeof scale.h is 'string' and scale.h.match(/%/) then @canvas.height * (parseFloat(scale.h)/100) else parseFloat(scale.h)
 		
+		cw = scale.w
+		ch = scale.h
+		
+		newScale = scale
+		console.log(@canvas.width)
+		console.log(@canvas.height)
 		#if keepProportions force stop image distorting
 		if keepProportions
-			if scale.w > scale.h or (scale.w==scale.h and @canvas.height > @canvas.width)
-				scale.h = (scale.w/@canvas.width)*@canvas.height
-			else if scale.h>scale.w or (scale.h==scale.w and @canvas.width > @canvas.height)
-				scale.w = (scale.h/@canvas.height)*@canvas.width
-			
-		@load(0,0,scale.w,scale.h)
+			if scale.w > scale.h or (scale.w is scale.h and @canvas.width > @canvas.height)
+				newScale.w = scale.w
+				newScale.h = (scale.w/@canvas.width)*@canvas.height
+			else if scale.h>scale.w or (scale.h is scale.w and @canvas.height > @canvas.width)
+				newScale.w = (scale.h/@canvas.height)*@canvas.width
+				newScale.h = scale.h
+				
+			if not crop
+				cw = newScale.w
+				ch = newScale.h
+							
+		@load(0,0,newScale.w,newScale.h,cw,ch)
 		return @
 	
 	###
@@ -58,9 +70,8 @@ obscura = (img,target) ->
 	Resizes an image to fit completely into a given space
 	###
 	@fit = (w,h) =>
-		if w>@canvas.width and h>@canvas.height
-			return @
-			
+		return @ if w>@canvas.width and h>@canvas.height
+						
 		if w<h or @canvas.width > @canvas.height or (w is h and @canvas.height > @canvas.width)
 			h = (w/@canvas.width)*@canvas.height
 		else if h<w or @canvas.height>@canvas.width or (h is w and @canvas.width > @canvas.height)
@@ -88,8 +99,6 @@ obscura = (img,target) ->
 			cw = w*Math.cos(angle * Math.PI/180) + h*Math.sin(angle * Math.PI/180)
 			ch = h*Math.cos(angle * Math.PI/180) + w*Math.sin(angle * Math.PI/180)
 			
-		console.log(cw)
-		console.log(ch) 
 		@context.clearRect(0,0,@canvas.width,@canvas.height)
 		@canvas.width = cw
 		@canvas.height = ch
@@ -120,6 +129,21 @@ obscura = (img,target) ->
 	
 		@context.drawImage(@image,-x2,-y2,w,h)
 		
+		
+		return @
+		
+	###
+	Flips an image
+	###
+	@flip = (direction='horizontal')=>
+		if direction is 'horizontal'
+			@context.translate(@canvas.width, 0);
+			@context.scale(-1,1) 
+		else 
+			@context.translate(0,@canvas.height);
+			@context.scale(1,-1)
+		
+		@context.drawImage(@image,0,0,@canvas.width,@canvas.height)
 		
 		return @
 				

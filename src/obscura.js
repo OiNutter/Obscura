@@ -1,7 +1,7 @@
 (function() {
   var obscura, root;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  root = typeof exports !== "undefined" && exports !== null ? exports : this;
+  root = typeof exports != "undefined" && exports !== null ? exports : this;
   obscura = function(img, target) {
     this.canvas = document.querySelector(target);
     this.context = this.canvas.getContext('2d');
@@ -31,9 +31,13 @@
     /*
     	resizes an image
     	*/
-    this.resize = __bind(function(scale, keepProportions) {
+    this.resize = __bind(function(scale, keepProportions, crop) {
+      var ch, cw, newScale;
       if (keepProportions == null) {
         keepProportions = true;
+      }
+      if (crop == null) {
+        crop = false;
       }
       if (Object.prototype.toString.call(scale) === '[object Array]') {
         scale = {
@@ -48,14 +52,25 @@
       }
       scale.w = typeof scale.w === 'string' && scale.w.match(/%/) ? this.canvas.width * (parseFloat(scale.w) / 100) : parseFloat(scale.w);
       scale.h = typeof scale.h === 'string' && scale.h.match(/%/) ? this.canvas.height * (parseFloat(scale.h) / 100) : parseFloat(scale.h);
+      cw = scale.w;
+      ch = scale.h;
+      newScale = scale;
+      console.log(this.canvas.width);
+      console.log(this.canvas.height);
       if (keepProportions) {
-        if (scale.w > scale.h || (scale.w === scale.h && this.canvas.height > this.canvas.width)) {
-          scale.h = (scale.w / this.canvas.width) * this.canvas.height;
-        } else if (scale.h > scale.w || (scale.h === scale.w && this.canvas.width > this.canvas.height)) {
-          scale.w = (scale.h / this.canvas.height) * this.canvas.width;
+        if (scale.w > scale.h || (scale.w === scale.h && this.canvas.width > this.canvas.height)) {
+          newScale.w = scale.w;
+          newScale.h = (scale.w / this.canvas.width) * this.canvas.height;
+        } else if (scale.h > scale.w || (scale.h === scale.w && this.canvas.height > this.canvas.width)) {
+          newScale.w = (scale.h / this.canvas.height) * this.canvas.width;
+          newScale.h = scale.h;
+        }
+        if (!crop) {
+          cw = newScale.w;
+          ch = newScale.h;
         }
       }
-      this.load(0, 0, scale.w, scale.h);
+      this.load(0, 0, newScale.w, newScale.h, cw, ch);
       return this;
     }, this);
     /*
@@ -101,8 +116,6 @@
         cw = w * Math.cos(angle * Math.PI / 180) + h * Math.sin(angle * Math.PI / 180);
         ch = h * Math.cos(angle * Math.PI / 180) + w * Math.sin(angle * Math.PI / 180);
       }
-      console.log(cw);
-      console.log(ch);
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.canvas.width = cw;
       this.canvas.height = ch;
@@ -131,6 +144,23 @@
       this.context.translate(x, y);
       this.context.rotate(angle * Math.PI / 180);
       this.context.drawImage(this.image, -x2, -y2, w, h);
+      return this;
+    }, this);
+    /*
+    	Flips an image
+    	*/
+    this.flip = __bind(function(direction) {
+      if (direction == null) {
+        direction = 'horizontal';
+      }
+      if (direction === 'horizontal') {
+        this.context.translate(this.canvas.width, 0);
+        this.context.scale(-1, 1);
+      } else {
+        this.context.translate(0, this.canvas.height);
+        this.context.scale(1, -1);
+      }
+      this.context.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height);
       return this;
     }, this);
     return this;
