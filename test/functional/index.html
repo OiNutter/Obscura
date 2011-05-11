@@ -9,6 +9,10 @@
 			background:#999;
 		}
 				
+		#edited{
+			background:#333;
+		}
+				
 		#container{
 			width:1080px;
 			position:relative;
@@ -43,8 +47,7 @@
 	<script language="Javascript" type="text/javascript" src="../../src/obscura.js"></script>
 	<script type="text/javascript">
 		var camera = new obscura('#orig','#edited');
-		//camera.load();
-		camera.resize({w:'50%',h:'50%'});
+		camera.rotate(30)
 	</script>
 </body>
 </html>
