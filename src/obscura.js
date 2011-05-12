@@ -1,7 +1,7 @@
 (function() {
   var obscura, root;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  root = typeof exports != "undefined" && exports !== null ? exports : this;
+  root = typeof exports !== "undefined" && exports !== null ? exports : this;
   obscura = function(img, target) {
     this.target = document.querySelector(target);
     this.canvas = document.createElement('canvas');
@@ -59,7 +59,7 @@
       if (crop == null) {
         crop = false;
       }
-      this.context.restore();
+      this.context.save();
       if (Object.prototype.toString.call(scale) === '[object Array]') {
         scale = {
           w: scale[0],
@@ -89,7 +89,7 @@
         }
       }
       this.load(0, 0, newScale.w, newScale.h);
-      this.context.save();
+      this.context.restore();
       return this;
     }, this);
     /*
@@ -97,7 +97,7 @@
     	*/
     this.crop = __bind(function(x, y, w, h) {
       var size;
-      this.context.restore();
+      this.context.save();
       size = this.dimensions;
       this.dimensions = {
         w: w,
@@ -109,7 +109,7 @@
         h: h
       };
       this.render();
-      this.context.save();
+      this.context.restore();
       return this;
     }, this);
     /*
@@ -135,7 +135,7 @@
       if (center == null) {
         center = 'center';
       }
-      this.context.restore();
+      this.context.save();
       _ref = this.dimensions, w = _ref.w, h = _ref.h;
       if (angle === 90 || angle === 120) {
         _ref2 = {
@@ -174,6 +174,7 @@
       this.context.translate(x, y);
       this.context.rotate(angle * Math.PI / 180);
       this.context.drawImage(this.canvas, 0, 0, w, h, -x2, -y2, w, h);
+      this.imageDimensions = this.dimensions;
       this.context.restore();
       this.render();
       return this;
@@ -185,7 +186,7 @@
       if (direction == null) {
         direction = 'horizontal';
       }
-      this.context.restore();
+      this.context.save();
       if (direction === 'horizontal') {
         this.context.translate(this.dimensions.w, 0);
         this.context.scale(-1, 1);
@@ -194,7 +195,7 @@
         this.context.scale(1, -1);
       }
       this.context.drawImage(this.canvas, 0, 0);
-      this.context.save();
+      this.context.restore();
       this.render();
       return this;
     }, this);
