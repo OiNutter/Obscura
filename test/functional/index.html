@@ -64,16 +64,16 @@
 	<script type="text/javascript">
 			
 		var resized = new obscura('#orig','#resized');
-		//resized.resize({w:300,h:300});
+		resized.resize(300);
 		
-		/*var scaled = new obscura('#orig','#scaled');
+		var scaled = new obscura('#orig','#scaled');
 		scaled.resize('50%');
 		
 		var cropped = new obscura('#orig','#cropped');
 		cropped.crop(20,20,250,250).resize('50%');
 		
 		var rotated = new obscura('#orig','#rotated');
-		rotated.rotate(30);
+		rotated.rotate(30).resize(300);
 		
 		var flippedh = new obscura('#orig','#flipped-h');
 		flippedh.flip();
@@ -82,7 +82,7 @@
 		flippedh.flip();
 		
 		var flippedv = new obscura('#orig','#flipped-v');
-		flippedv.flip('vertical');*/
+		flippedv.flip('vertical');
 	</script>
 </body>
 </html>

@@ -4,26 +4,37 @@ root = exports ? this
 obscura = (img,target) ->
 	
 	#load element
-	@canvas = document.querySelector(target)
+	@target = document.querySelector(target)
+	@canvas = document.createElement('canvas')
 	@context = @canvas.getContext('2d')
 	@image = document.querySelector(img)
+	@dimensions = 
+			w:@image.width
+			h:@image.height
+			
+	@imageDimensions = @dimensions
 	
+	@canvas.width = @canvas.height = if @dimensions.w>@dimensions.h then @dimensions.w*2 else @dimensions.h*2
 	###
 	load image
 	###
 	@load =(x=0,y=0,w=@image.width,h=@image.height,cw,ch,image)=>
-		@context.restore()
-		@context.save()
-		#@context.globalCompositeOperation = "copy";
-		
+		@context.globalCompositeOperation = "copy";
 		image = image ? @canvas
-		@context.drawImage(image,x,y,w,h)
-		@canvas.width = cw ? w
-		@canvas.height = ch ? h
-		@context.save()
-		@context.restore()
+		@context.drawImage(image,0,0,@imageDimensions.w,@imageDimensions.h,x,y,w,h)
+		@imageDimensions = {w,h}
+		@render()
 		return @
-		
+	
+	###
+	render edited image to target
+	###
+	@render = =>
+		@target.width = @dimensions.w
+		@target.height = @dimensions.h
+		@target.getContext('2d').drawImage(@canvas,0,0)
+		return @
+	
 	###
 	resizes an image
 	###	
@@ -40,38 +51,41 @@ obscura = (img,target) ->
 				h:scale
 				
 		#convert percentages to actual values
-		scale.w = if typeof scale.w is 'string' and scale.w.match(/%/) then @canvas.width * (parseFloat(scale.w)/100) else parseFloat(scale.w) 
-		scale.h = if typeof scale.h is 'string' and scale.h.match(/%/) then @canvas.height * (parseFloat(scale.h)/100) else parseFloat(scale.h)
+		scale.w = if typeof scale.w is 'string' and scale.w.match(/%/) then @dimensions.w * (parseFloat(scale.w)/100) else parseFloat(scale.w) 
+		scale.h = if typeof scale.h is 'string' and scale.h.match(/%/) then @dimensions.h * (parseFloat(scale.h)/100) else parseFloat(scale.h)
 		
-		cw = scale.w
-		ch = scale.h
+		currentDimensions = @dimensions
+		@dimensions = scale
 		
 		newScale = scale
 		#if keepProportions force stop image distorting
 		if keepProportions
-			if scale.w > scale.h or (scale.w is scale.h and @canvas.width > @canvas.height)
+			if scale.w > scale.h or (scale.w is scale.h and currentDimensions.w > currentDimensions.h)
 				newScale.w = scale.w
-				newScale.h = (scale.w/@canvas.width)*@canvas.height
-			else if scale.h>scale.w or (scale.h is scale.w and @canvas.height > @canvas.width)
-				newScale.w = (scale.h/@canvas.height)*@canvas.width
+				newScale.h = (scale.w/currentDimensions.w)*currentDimensions.h
+			else if scale.h>scale.w or (scale.h is scale.w and currentDimensions.h > currentDimensions.w)
+				newScale.w = (scale.h/currentDimensions.h)*currentDimensions.w
 				newScale.h = scale.h
 				
-			if not crop
-				cw = newScale.w
-				ch = newScale.h
+			@dimensions = newScale unless crop
+				
 		
-		#@load(0,0,newScale.w,newScale.h,cw,ch)
-		@context.globalCompositeOperation = "copy"
-		#@context.drawImage(@canvas,0,0,newScale.w,newScale.h)
-		#@canvas.width = cw
-		#@canvas.height= ch
+		
+		@load(0,0,newScale.w,newScale.h)
+		@context.save()
 		return @
 	
 	###
 	Crops an image
 	###
 	@crop = (x,y,w,h) =>
-		@load(-x,-y,@canvas.width,@canvas.height,w,h)
+		@context.restore()
+		size = @dimensions
+		@dimensions = {w,h}
+		@context.drawImage(@canvas,x,y,w,h,0,0,w,h)
+		@imageDimensions = {w,h}
+		@render()
+		@context.save()
 		return @
 		
 	###
@@ -92,62 +106,62 @@ obscura = (img,target) ->
 	Rotates an image
 	###
 	@rotate = (angle,center='center') =>
-		w = @canvas.width
-		h = @canvas.height
+		@context.restore();
+		{w,h}=@dimensions
 		if angle is 90 or angle is 120
-			cw = h
-			ch = w
-		else if angle is 180 or angle is 360
-			cw = w
-			ch = h
-		else 	
+			{cw,ch} = {h,w}
+		else if angle isnt 180 or angle isnt 360 	
 			cw = w*Math.cos(angle * Math.PI/180) + h*Math.sin(angle * Math.PI/180)
 			ch = h*Math.cos(angle * Math.PI/180) + w*Math.sin(angle * Math.PI/180)
 			
-			@context.globalCompositeOperation = "copy";
-		@canvas.width = cw
-		@canvas.height = ch
-		
+		@context.globalCompositeOperation = "copy";
+				
 		if typeof center isnt 'object'
 			if center.match(/(top)/)
 				y = 0
 				y2 = (ch-h)/2
 			else if center.match(/(bottom)/)
-				y = @canvas.height
-				y2 = @canvas.height - (ch-h)/2
+				y = ch
+				y2 = ch - (ch-h)/2
 			else if center.match(/(center)/)
-				y = @canvas.height/2
+				y = ch/2
 				y2 = h/2
 				
 			if center.match(/(left)/)
 				x = 0
 				x2 = (cw-w)/2
 			else if center.match(/(middle)/)
-				x = @canvas.width
-				x2 = @canvas.height - (cw-w)/2
+				x = cw
+				x2 = cw - (cw-w)/2
 			else if center.match(/(center)/)
-				x = @canvas.width/2
+				x = cw/2
 				x2 = w/2
-		
+
+		@dimensions.w = cw
+		@dimensions.h = ch
 		@context.translate(x,y)
 		@context.rotate(angle * Math.PI/180)
-		@context.drawImage(@canvas,-x2,-y2,w,h)
-		
+		@context.drawImage(@canvas,0,0,w,h,-x2,-y2,w,h)
+		#@context.save()
+		@context.restore()
+		@render()
 		return @
 		
 	###
 	Flips an image
 	###
 	@flip = (direction='horizontal')=>
+		@context.restore()
 		if direction is 'horizontal'
-			@context.translate(@canvas.width, 0);
+			@context.translate(@dimensions.w, 0);
 			@context.scale(-1,1) 
 		else 
-			@context.translate(0,@canvas.height);
+			@context.translate(0,@dimensions.h);
 			@context.scale(1,-1)
 		
-		@context.drawImage(@canvas,0,0,@canvas.width,@canvas.height)
-		
+		@context.drawImage(@canvas,0,0)
+		@context.save()
+		@render()
 		return @
 	
 	#initial load of image
