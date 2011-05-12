@@ -1,7 +1,7 @@
 (function() {
   var obscura, root;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  root = typeof exports != "undefined" && exports !== null ? exports : this;
+  root = typeof exports !== "undefined" && exports !== null ? exports : this;
   obscura = function(img, target) {
     this.canvas = document.querySelector(target);
     this.context = this.canvas.getContext('2d');
@@ -9,7 +9,7 @@
     /*
     	load image
     	*/
-    this.load = __bind(function(x, y, w, h, cw, ch) {
+    this.load = __bind(function(x, y, w, h, cw, ch, image) {
       if (x == null) {
         x = 0;
       }
@@ -22,10 +22,14 @@
       if (h == null) {
         h = this.image.height;
       }
-      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.context.restore();
+      this.context.save();
+      image = image != null ? image : this.canvas;
+      this.context.drawImage(image, x, y, w, h);
       this.canvas.width = cw != null ? cw : w;
       this.canvas.height = ch != null ? ch : h;
-      this.context.drawImage(this.image, x, y, w, h);
+      this.context.save();
+      this.context.restore();
       return this;
     }, this);
     /*
@@ -39,6 +43,7 @@
       if (crop == null) {
         crop = false;
       }
+      this.context.restore();
       if (Object.prototype.toString.call(scale) === '[object Array]') {
         scale = {
           w: scale[0],
@@ -55,8 +60,6 @@
       cw = scale.w;
       ch = scale.h;
       newScale = scale;
-      console.log(this.canvas.width);
-      console.log(this.canvas.height);
       if (keepProportions) {
         if (scale.w > scale.h || (scale.w === scale.h && this.canvas.width > this.canvas.height)) {
           newScale.w = scale.w;
@@ -70,7 +73,7 @@
           ch = newScale.h;
         }
       }
-      this.load(0, 0, newScale.w, newScale.h, cw, ch);
+      this.context.globalCompositeOperation = "copy";
       return this;
     }, this);
     /*
@@ -95,7 +98,6 @@
       this.load(0, 0, w, h);
       return this;
     }, this);
-    this.load();
     /*
     	Rotates an image
     	*/
@@ -115,8 +117,8 @@
       } else {
         cw = w * Math.cos(angle * Math.PI / 180) + h * Math.sin(angle * Math.PI / 180);
         ch = h * Math.cos(angle * Math.PI / 180) + w * Math.sin(angle * Math.PI / 180);
+        this.context.globalCompositeOperation = "copy";
       }
-      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.canvas.width = cw;
       this.canvas.height = ch;
       if (typeof center !== 'object') {
@@ -143,7 +145,7 @@
       }
       this.context.translate(x, y);
       this.context.rotate(angle * Math.PI / 180);
-      this.context.drawImage(this.image, -x2, -y2, w, h);
+      this.context.drawImage(this.canvas, -x2, -y2, w, h);
       return this;
     }, this);
     /*
@@ -160,9 +162,10 @@
         this.context.translate(0, this.canvas.height);
         this.context.scale(1, -1);
       }
-      this.context.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height);
+      this.context.drawImage(this.canvas, 0, 0, this.canvas.width, this.canvas.height);
       return this;
     }, this);
+    this.load(0, 0, this.image.width, this.image.height, this.image.width, this.image.height, this.image);
     return this;
   };
   root.obscura = obscura;

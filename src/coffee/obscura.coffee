@@ -11,18 +11,24 @@ obscura = (img,target) ->
 	###
 	load image
 	###
-	@load =(x=0,y=0,w=@image.width,h=@image.height,cw,ch)=>
-		@context.clearRect(0,0,@canvas.width,@canvas.height)
+	@load =(x=0,y=0,w=@image.width,h=@image.height,cw,ch,image)=>
+		@context.restore()
+		@context.save()
+		#@context.globalCompositeOperation = "copy";
+		
+		image = image ? @canvas
+		@context.drawImage(image,x,y,w,h)
 		@canvas.width = cw ? w
 		@canvas.height = ch ? h
-		@context.drawImage(@image,x,y,w,h)
+		@context.save()
+		@context.restore()
 		return @
 		
 	###
 	resizes an image
 	###	
 	@resize = (scale,keepProportions=true,crop=false) =>
-			
+		@context.restore()
 		#check type of scale and convert it to an object if not already
 		if Object.prototype.toString.call(scale) is '[object Array]'
 			scale = 
@@ -41,8 +47,6 @@ obscura = (img,target) ->
 		ch = scale.h
 		
 		newScale = scale
-		console.log(@canvas.width)
-		console.log(@canvas.height)
 		#if keepProportions force stop image distorting
 		if keepProportions
 			if scale.w > scale.h or (scale.w is scale.h and @canvas.width > @canvas.height)
@@ -55,8 +59,12 @@ obscura = (img,target) ->
 			if not crop
 				cw = newScale.w
 				ch = newScale.h
-							
-		@load(0,0,newScale.w,newScale.h,cw,ch)
+		
+		#@load(0,0,newScale.w,newScale.h,cw,ch)
+		@context.globalCompositeOperation = "copy"
+		#@context.drawImage(@canvas,0,0,newScale.w,newScale.h)
+		#@canvas.width = cw
+		#@canvas.height= ch
 		return @
 	
 	###
@@ -79,9 +87,6 @@ obscura = (img,target) ->
 		
 		@load(0,0,w,h)
 		return @
-			
-	#initial load of image
-	@load();
 	
 	###
 	Rotates an image
@@ -99,7 +104,7 @@ obscura = (img,target) ->
 			cw = w*Math.cos(angle * Math.PI/180) + h*Math.sin(angle * Math.PI/180)
 			ch = h*Math.cos(angle * Math.PI/180) + w*Math.sin(angle * Math.PI/180)
 			
-		@context.clearRect(0,0,@canvas.width,@canvas.height)
+			@context.globalCompositeOperation = "copy";
 		@canvas.width = cw
 		@canvas.height = ch
 		
@@ -126,9 +131,7 @@ obscura = (img,target) ->
 		
 		@context.translate(x,y)
 		@context.rotate(angle * Math.PI/180)
-	
-		@context.drawImage(@image,-x2,-y2,w,h)
-		
+		@context.drawImage(@canvas,-x2,-y2,w,h)
 		
 		return @
 		
@@ -143,9 +146,12 @@ obscura = (img,target) ->
 			@context.translate(0,@canvas.height);
 			@context.scale(1,-1)
 		
-		@context.drawImage(@image,0,0,@canvas.width,@canvas.height)
+		@context.drawImage(@canvas,0,0,@canvas.width,@canvas.height)
 		
 		return @
-				
+	
+	#initial load of image
+	@load(0,0,@image.width,@image.height,@image.width,@image.height,@image);
+		
 	return this
 root.obscura = obscura
