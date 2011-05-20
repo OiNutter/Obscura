@@ -39,7 +39,7 @@ obscura = (img,target) ->
 	resizes an image
 	###	
 	@resize = (scale,keepProportions=true,crop=false) =>
-		@context.restore()
+		@context.save()
 		#check type of scale and convert it to an object if not already
 		if Object.prototype.toString.call(scale) is '[object Array]'
 			scale = 
@@ -72,20 +72,20 @@ obscura = (img,target) ->
 		
 		
 		@load(0,0,newScale.w,newScale.h)
-		@context.save()
+		@context.restore()
 		return @
 	
 	###
 	Crops an image
 	###
 	@crop = (x,y,w,h) =>
-		@context.restore()
+		@context.save()
 		size = @dimensions
 		@dimensions = {w,h}
 		@context.drawImage(@canvas,x,y,w,h,0,0,w,h)
 		@imageDimensions = {w,h}
 		@render()
-		@context.save()
+		@context.restore()
 		return @
 		
 	###
@@ -143,18 +143,16 @@ obscura = (img,target) ->
 		@context.translate(x,y)
 		@context.rotate(angle * Math.PI/180)
 		@context.drawImage(@canvas,0,0,w,h,-x2,-y2,w,h)
-		@imageDimensions.w = cw
-		@imageDimensions.h = ch
+		@imageDimensions = @dimensions
+		@context.restore()
 		@render()
-		#@context.restore()
-		#@context.save()
 		return @
 		
 	###
 	Flips an image
 	###
 	@flip = (direction='horizontal')=>
-		@context.restore()
+		@context.save()
 		if direction is 'horizontal'
 			@context.translate(@dimensions.w, 0);
 			@context.scale(-1,1) 
@@ -163,7 +161,7 @@ obscura = (img,target) ->
 			@context.scale(1,-1)
 		
 		@context.drawImage(@canvas,0,0)
-		@context.save()
+		@context.restore()
 		@render()
 		return @
 	
