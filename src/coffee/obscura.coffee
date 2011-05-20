@@ -166,6 +166,78 @@ obscura = (img,target) ->
 	
 	#initial load of image
 	@load(0,0,@image.width,@image.height,@image.width,@image.height,@image);
+	
+	###
+	Reflection
+	###
+	@reflect = (alphaStart=0.5,gap=0,reflectionAmount=0.25,direction = 'vertical') =>
+	
+		gradientCanvas = document.createElement('canvas')
 		
+		gradientCanvas.width = @imageDimensions.w
+		gradientCanvas.height = @imageDimensions.h
+				
+		gradientContext = gradientCanvas.getContext('2d')
+		@context.restore()
+		@context.globalCompositeOperation = 'source-over'
+				
+		startPos = 
+			x:0
+			y:0
+		
+		targetPos =
+			x:0
+			y:0
+			
+		{w,h} = @imageDimensions
+		
+		if direction is 'vertical'
+			h = @imageDimensions.h * reflectionAmount
+			@dimensions.h = @imageDimensions.h + gap + h
+			gradientContext.translate(0,h)
+			gradientContext.scale(1,-1)
+			@context.translate(0,h)
+			@context.scale(1,-1)
+			targetPos.y = @dimensions.h
+			startPos.y = @imageDimensions.h-h
+		
+		gradient = gradientContext.createLinearGradient(0, 0, 0, h)
+		gradient.addColorStop(0, "transparent")
+		gradient.addColorStop(1, "#000")
+		
+		gradientContext.fillStyle = gradient
+		gradientContext.fillRect(0, 0, w,h)
+		
+		gradientImageData = gradientContext.getImageData(0, 0, w, h);
+				
+		gradientContext.drawImage(@canvas,startPos.x,startPos.y,w,h,0,0,w,h)
+		
+		
+		imageData = @context.getImageData(0,0,w,h)
+		reflectionImageData = gradientContext.getImageData(0,0,w,h)
+		opacity=1		
+			
+		col = 1
+		row = 1;
+		alphaStep = (255*alphaStart)/h
+		console.log(alphaStep)
+		until row > h
+			until col > w
+				alpha = reflectionImageData.data[((row*(w*4)) + (col*4)) + 3]
+				alpha = Math.min(alpha,((h-(row-1))*alphaStep))
+				reflectionImageData.data[((row*(w*4)) + (col*4)) + 3] = alpha
+				col++
+			console.log(alpha)
+			col=1
+			row++
+			
+		@context.putImageData(reflectionImageData, 0,@imageDimensions.h)
+		
+		@imageDimensions = @dimensions
+		
+		@context.save()
+		@render()
+		return @
+	
 	return this
 root.obscura = obscura

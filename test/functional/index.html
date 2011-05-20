@@ -16,7 +16,7 @@
 		#container{
 			width:1080px;
 			position:relative;
-			margin:auto;
+			margin:auto auto 50px;
 		}
 		
 		#col-alpha{
@@ -58,7 +58,11 @@
 			<h1>Flipped Vertically</h1>
 			<canvas id="flipped-v"></canvas>
 			
+			<h1>Reflection</h1>
+			<canvas id="reflected"></canvas>
+			
 		</div>
+		<br style="clear:both"/>
 	</div>
 	<script language="Javascript" type="text/javascript" src="../../src/obscura.js"></script>
 	<script type="text/javascript">
@@ -83,6 +87,9 @@
 		
 		var flippedv = new obscura('#orig','#flipped-v');
 		flippedv.flip('vertical');
+		
+		var reflected = new obscura('#orig','#reflected');
+		reflected.reflect();
 	</script>
 </body>
 </html>

@@ -199,6 +199,79 @@
       return this;
     }, this);
     this.load(0, 0, this.image.width, this.image.height, this.image.width, this.image.height, this.image);
+    /*
+    	Reflection
+    	*/
+    this.reflect = __bind(function(alphaStart, gap, reflectionAmount, direction) {
+      var alpha, alphaStep, col, gradient, gradientCanvas, gradientContext, gradientImageData, h, imageData, opacity, reflectionImageData, row, startPos, targetPos, w, _ref;
+      if (alphaStart == null) {
+        alphaStart = 0.5;
+      }
+      if (gap == null) {
+        gap = 0;
+      }
+      if (reflectionAmount == null) {
+        reflectionAmount = 0.25;
+      }
+      if (direction == null) {
+        direction = 'vertical';
+      }
+      gradientCanvas = document.createElement('canvas');
+      gradientCanvas.width = this.imageDimensions.w;
+      gradientCanvas.height = this.imageDimensions.h;
+      gradientContext = gradientCanvas.getContext('2d');
+      this.context.restore();
+      this.context.globalCompositeOperation = 'source-over';
+      startPos = {
+        x: 0,
+        y: 0
+      };
+      targetPos = {
+        x: 0,
+        y: 0
+      };
+      _ref = this.imageDimensions, w = _ref.w, h = _ref.h;
+      if (direction === 'vertical') {
+        h = this.imageDimensions.h * reflectionAmount;
+        this.dimensions.h = this.imageDimensions.h + gap + h;
+        gradientContext.translate(0, h);
+        gradientContext.scale(1, -1);
+        this.context.translate(0, h);
+        this.context.scale(1, -1);
+        targetPos.y = this.dimensions.h;
+        startPos.y = this.imageDimensions.h - h;
+      }
+      gradient = gradientContext.createLinearGradient(0, 0, 0, h);
+      gradient.addColorStop(0, "transparent");
+      gradient.addColorStop(1, "#000");
+      gradientContext.fillStyle = gradient;
+      gradientContext.fillRect(0, 0, w, h);
+      gradientImageData = gradientContext.getImageData(0, 0, w, h);
+      gradientContext.drawImage(this.canvas, startPos.x, startPos.y, w, h, 0, 0, w, h);
+      imageData = this.context.getImageData(0, 0, w, h);
+      reflectionImageData = gradientContext.getImageData(0, 0, w, h);
+      opacity = 1;
+      col = 1;
+      row = 1;
+      alphaStep = (255 * alphaStart) / h;
+      console.log(alphaStep);
+      while (!(row > h)) {
+        while (!(col > w)) {
+          alpha = reflectionImageData.data[((row * (w * 4)) + (col * 4)) + 3];
+          alpha = Math.min(alpha, (h - (row - 1)) * alphaStep);
+          reflectionImageData.data[((row * (w * 4)) + (col * 4)) + 3] = alpha;
+          col++;
+        }
+        console.log(alpha);
+        col = 1;
+        row++;
+      }
+      this.context.putImageData(reflectionImageData, 0, this.imageDimensions.h);
+      this.imageDimensions = this.dimensions;
+      this.context.save();
+      this.render();
+      return this;
+    }, this);
     return this;
   };
   root.obscura = obscura;
