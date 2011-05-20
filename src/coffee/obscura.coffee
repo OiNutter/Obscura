@@ -107,6 +107,7 @@ obscura = (img,target) ->
 	###
 	@rotate = (angle,center='center') =>
 		@context.restore();
+		@context.save();
 		{w,h}=@dimensions
 		if angle is 90 or angle is 120
 			{cw,ch} = {h,w}
@@ -142,9 +143,11 @@ obscura = (img,target) ->
 		@context.translate(x,y)
 		@context.rotate(angle * Math.PI/180)
 		@context.drawImage(@canvas,0,0,w,h,-x2,-y2,w,h)
-		#@context.save()
-		@context.restore()
+		@imageDimensions.w = cw
+		@imageDimensions.h = ch
 		@render()
+		#@context.restore()
+		#@context.save()
 		return @
 		
 	###
@@ -200,14 +203,7 @@ obscura = (img,target) ->
 			@context.scale(1,-1)
 			targetPos.y = @dimensions.h
 			startPos.y = @imageDimensions.h-h
-		
-		gradient = gradientContext.createLinearGradient(0, 0, 0, h)
-		gradient.addColorStop(0, "transparent")
-		gradient.addColorStop(1, "#000")
-		
-		gradientContext.fillStyle = gradient
-		gradientContext.fillRect(0, 0, w,h)
-		
+				
 		gradientImageData = gradientContext.getImageData(0, 0, w, h);
 				
 		gradientContext.drawImage(@canvas,startPos.x,startPos.y,w,h,0,0,w,h)
@@ -227,7 +223,6 @@ obscura = (img,target) ->
 				alpha = Math.min(alpha,((h-(row-1))*alphaStep))
 				reflectionImageData.data[((row*(w*4)) + (col*4)) + 3] = alpha
 				col++
-			console.log(alpha)
 			col=1
 			row++
 			

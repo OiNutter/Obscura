@@ -136,6 +136,7 @@
         center = 'center';
       }
       this.context.restore();
+      this.context.save();
       _ref = this.dimensions, w = _ref.w, h = _ref.h;
       if (angle === 90 || angle === 120) {
         _ref2 = {
@@ -174,7 +175,8 @@
       this.context.translate(x, y);
       this.context.rotate(angle * Math.PI / 180);
       this.context.drawImage(this.canvas, 0, 0, w, h, -x2, -y2, w, h);
-      this.context.restore();
+      this.imageDimensions.w = cw;
+      this.imageDimensions.h = ch;
       this.render();
       return this;
     }, this);
@@ -203,7 +205,7 @@
     	Reflection
     	*/
     this.reflect = __bind(function(alphaStart, gap, reflectionAmount, direction) {
-      var alpha, alphaStep, col, gradient, gradientCanvas, gradientContext, gradientImageData, h, imageData, opacity, reflectionImageData, row, startPos, targetPos, w, _ref;
+      var alpha, alphaStep, col, gradientCanvas, gradientContext, gradientImageData, h, imageData, opacity, reflectionImageData, row, startPos, targetPos, w, _ref;
       if (alphaStart == null) {
         alphaStart = 0.5;
       }
@@ -241,11 +243,6 @@
         targetPos.y = this.dimensions.h;
         startPos.y = this.imageDimensions.h - h;
       }
-      gradient = gradientContext.createLinearGradient(0, 0, 0, h);
-      gradient.addColorStop(0, "transparent");
-      gradient.addColorStop(1, "#000");
-      gradientContext.fillStyle = gradient;
-      gradientContext.fillRect(0, 0, w, h);
       gradientImageData = gradientContext.getImageData(0, 0, w, h);
       gradientContext.drawImage(this.canvas, startPos.x, startPos.y, w, h, 0, 0, w, h);
       imageData = this.context.getImageData(0, 0, w, h);
@@ -262,7 +259,6 @@
           reflectionImageData.data[((row * (w * 4)) + (col * 4)) + 3] = alpha;
           col++;
         }
-        console.log(alpha);
         col = 1;
         row++;
       }
