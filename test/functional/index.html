@@ -65,8 +65,8 @@
 	<script language="Javascript" type="text/javascript" src="../../src/obscura.js"></script>
 	<script type="text/javascript">
 			
-		var resized = new obscura('#orig','#resized');
-		resized.resize(300);
+		var resized = new obscura('#orig','#resized').resize(300);
+		//resized.resize(300);
 		
 		var scaled = new obscura('#orig','#scaled');
 		scaled.resize('50%');
@@ -85,6 +85,11 @@
 		
 		var reflected = new obscura('#orig','#reflected');
 		reflected.reflect();
+			
+		var loaded = new obscura('img/Wedge_Antilles_helmet.jpg');
+		loaded.onLoad = function(){
+			window.open(loaded.reflect().save());
+		};
 	</script>
 </body>
 </html>
