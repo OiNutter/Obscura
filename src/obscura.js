@@ -3,16 +3,29 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   root = typeof exports != "undefined" && exports !== null ? exports : this;
   obscura = function(img, target) {
-    this.target = document.querySelector(target);
-    this.canvas = document.createElement('canvas');
-    this.context = this.canvas.getContext('2d');
-    this.image = document.querySelector(img);
-    this.dimensions = {
-      w: this.image.width,
-      h: this.image.height
-    };
-    this.imageDimensions = this.dimensions;
-    this.canvas.width = this.canvas.height = this.dimensions.w > this.dimensions.h ? this.dimensions.w * 2 : this.dimensions.h * 2;
+    var fileRegExp;
+    if (target == null) {
+      target = null;
+    }
+    /*
+    	internal variables
+    	*/
+    fileRegExp = /\.((jp(e)?g)|(png)|(gif))$/i;
+    this.onLoad = __bind(function() {
+      return true;
+    }, this);
+    /*
+    	Set up local variables with image data from source
+    	*/
+    this.setUpImageData = __bind(function() {
+      this.dimensions = {
+        w: this.image.width,
+        h: this.image.height
+      };
+      this.imageDimensions = this.dimensions;
+      this.canvas.width = this.canvas.height = this.dimensions.w > this.dimensions.h ? this.dimensions.w * 2 : this.dimensions.h * 2;
+      return this.load(0, 0, this.image.width, this.image.height, this.image.width, this.image.height, this.image);
+    }, this);
     /*
     	load image
     	*/
@@ -47,6 +60,12 @@
       this.target.height = this.dimensions.h;
       this.target.getContext('2d').drawImage(this.canvas, 0, 0);
       return this;
+    }, this);
+    /*
+    	Convert image to base64 encoded string for saving to server
+    	*/
+    this.save = __bind(function() {
+      return this.target.toDataURL();
     }, this);
     /*
     	resizes an image
@@ -200,7 +219,6 @@
       this.render();
       return this;
     }, this);
-    this.load(0, 0, this.image.width, this.image.height, this.image.width, this.image.height, this.image);
     /*
     	Reflection
     	*/
@@ -251,7 +269,6 @@
       col = 1;
       row = 1;
       alphaStep = (255 * alphaStart) / h;
-      console.log(alphaStep);
       while (!(row > h)) {
         while (!(col > w)) {
           alpha = reflectionImageData.data[((row * (w * 4)) + (col * 4)) + 3];
@@ -268,6 +285,20 @@
       this.render();
       return this;
     }, this);
+    this.target = target !== null ? document.querySelector(target) : document.createElement('canvas');
+    this.canvas = document.createElement('canvas');
+    this.context = this.canvas.getContext('2d');
+    if (img.match(fileRegExp)) {
+      this.image = new Image();
+      this.image.onload = __bind(function() {
+        this.setUpImageData();
+        return this.onLoad();
+      }, this);
+      this.image.src = img;
+    } else {
+      this.image = document.querySelector(img);
+      this.setUpImageData();
+    }
     return this;
   };
   root.obscura = obscura;

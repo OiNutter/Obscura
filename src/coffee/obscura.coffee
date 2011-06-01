@@ -1,20 +1,28 @@
 #set up global object
 root = exports ? this
 		
-obscura = (img,target) ->
-	
-	#load element
-	@target = document.querySelector(target)
-	@canvas = document.createElement('canvas')
-	@context = @canvas.getContext('2d')
-	@image = document.querySelector(img)
-	@dimensions = 
-			w:@image.width
-			h:@image.height
-			
-	@imageDimensions = @dimensions
-	
-	@canvas.width = @canvas.height = if @dimensions.w>@dimensions.h then @dimensions.w*2 else @dimensions.h*2
+obscura = (img,target=null) ->
+
+	###
+	internal variables
+	###
+	fileRegExp = /\.((jp(e)?g)|(png)|(gif))$/i
+	@onLoad = =>
+		return true
+		
+	###
+	Set up local variables with image data from source
+	###
+	@setUpImageData = =>
+		@dimensions = 
+				w:@image.width
+				h:@image.height
+		@imageDimensions = @dimensions
+		@canvas.width = @canvas.height = if @dimensions.w>@dimensions.h then @dimensions.w*2 else @dimensions.h*2
+		
+		#initial load of image
+		@load(0,0,@image.width,@image.height,@image.width,@image.height,@image);
+		
 	###
 	load image
 	###
@@ -35,6 +43,12 @@ obscura = (img,target) ->
 		@target.getContext('2d').drawImage(@canvas,0,0)
 		return @
 	
+	###
+	Convert image to base64 encoded string for saving to server
+	###
+	@save = => 
+		return @target.toDataURL()
+		
 	###
 	resizes an image
 	###	
@@ -164,10 +178,7 @@ obscura = (img,target) ->
 		@context.restore()
 		@render()
 		return @
-	
-	#initial load of image
-	@load(0,0,@image.width,@image.height,@image.width,@image.height,@image);
-	
+		
 	###
 	Reflection
 	###
@@ -214,7 +225,6 @@ obscura = (img,target) ->
 		col = 1
 		row = 1;
 		alphaStep = (255*alphaStart)/h
-		console.log(alphaStep)
 		until row > h
 			until col > w
 				alpha = reflectionImageData.data[((row*(w*4)) + (col*4)) + 3]
@@ -231,6 +241,22 @@ obscura = (img,target) ->
 		@context.save()
 		@render()
 		return @
+		
+	#load element
+	@target = if target isnt null then document.querySelector(target) else document.createElement('canvas')
+	@canvas = document.createElement('canvas')
+	@context = @canvas.getContext('2d')
 	
+	if img.match(fileRegExp)
+		@image = new Image()
+		@image.onload = =>
+			@setUpImageData()
+			@onLoad()
+		@image.src = img
+	else
+		@image = document.querySelector(img)
+		@setUpImageData()
+			
 	return this
+				
 root.obscura = obscura
