@@ -31,4 +31,19 @@ Otherwise it won't work as it will try and call the methods before Obscura's int
 Functions
 ---------
 
+###Resize###
+
+####Usage####
+
+	camera.resize(300 [,keepProportions=true[,crop=false]);
+	camera.resize('50%' [,keepProportions=true[,crop=false]);
+	camera.resize({w:300,h:250} [,keepProportions=true[,crop=false]);
+	camera.resize([300,250] [,keepProportions=true[,crop=false]);
+
+Values are specified either as a percentage string value e.g. `'50%'` or as a pixel value, which can be given as an integer e.g. `300` or as a string value `'300px'`.  There are also 2 optional parameters:
+
+- `keepProportions` A boolean value that defines whether the image will be distorted on resizing, if set to false and not cropping, it will resize to the largest of the new dimensions, or, if the new dimensions
+are equal, it will resize to whichever the largest original dimension is. Defaults to `true`.
+- `crop` A boolean value that defines whether to crop the image on resize if the new proportions are different.  Defaults to `false`.
+
 	
