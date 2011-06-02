@@ -38,10 +38,30 @@ Functions
 	camera.resize({w:300,h:250} [,keepProportions=true[,crop=false]);
 	camera.resize([300,250] [,keepProportions=true[,crop=false]);
 
-Values are specified either as a percentage string value e.g. `'50%'` or as a pixel value, which can be given as an integer e.g. `300` or as a string value `'300px'`.  There are also 2 optional parameters:
+Resizes image to given values. Values are specified either as a percentage string value e.g. `'50%'` or as a pixel value, which can be given as an integer e.g. `300` or as a string value `'300px'`. If only one value is given Obscura will 
+assume you wish to resize both dimensions to that scale. There are also 2 optional parameters:
 
 - `keepProportions` A boolean value that defines whether the image will be distorted on resizing, if set to false and not cropping, it will resize to the largest of the new dimensions, or, if the new dimensions
 are equal, it will resize to whichever the largest original dimension is. Defaults to `true`.
 - `crop` A boolean value that defines whether to crop the image on resize if the new proportions are different.  Defaults to `false`.
 
-	
+###Fit###
+
+	camera.fit(width,height);
+
+Similar to Resize, Fit will resize an image to fit into the area defined by the width and height values provided.  Priority is given to the largest original dimension.
+
+###Crop###
+
+	camera.crop(x,y,width,height);
+
+Crops an image to the given dimensions, from the given start co-ordinates.
+
+###Rotate###
+
+	camera.rotate(deg[,center]);
+
+Rotates an image by the specified amount of degrees.  Takes one optional parameter:
+
+- `center` Defines the center of rotation.  Currently just takes a string e.g. 'top right'.  The string can be formatted any way as long as it contains one of the valid x and y strings in it.  Valid strings are 'top', 'bottom', 'left', 'right' and 'center'. 
+For the exact center you can just use center once.  I will be adding the facility to specify co-ordinates in the next version. Defaults to 'center'
