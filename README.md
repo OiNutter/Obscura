@@ -33,8 +33,6 @@ Functions
 
 ###Resize###
 
-####Usage####
-
 	camera.resize(300 [,keepProportions=true[,crop=false]);
 	camera.resize('50%' [,keepProportions=true[,crop=false]);
 	camera.resize({w:300,h:250} [,keepProportions=true[,crop=false]);
