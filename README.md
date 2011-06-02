@@ -63,5 +63,15 @@ Crops an image to the given dimensions, from the given start co-ordinates.
 
 Rotates an image by the specified amount of degrees.  Takes one optional parameter:
 
-- `center` Defines the center of rotation.  Currently just takes a string e.g. 'top right'.  The string can be formatted any way as long as it contains one of the valid x and y strings in it.  Valid strings are 'top', 'bottom', 'left', 'right' and 'center'. 
-For the exact center you can just use center once.  I will be adding the facility to specify co-ordinates in the next version. Defaults to 'center'
+- `center` Defines the center of rotation.  Currently just takes a string e.g. `'top right'`.  The string can be formatted any way as long as it contains one of the valid x and y strings in it.  Valid strings are `'top'`, `'bottom'`, `'left'`, `'right'` and `'center'`. 
+For the exact center you can just use center once.  I will be adding the facility to specify co-ordinates in the next version. Defaults to `'center'`.
+
+###Flip###
+
+	camera.flip([direction]);
+
+Flips the image across the specified axis.  If no parameter is passed it will default to 'horizontal', other option is 'vertial'.
+
+###Reflect###
+
+	camera.reflect()
