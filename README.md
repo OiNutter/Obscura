@@ -6,6 +6,10 @@ Obscura is a small library of common image manipulation functions using canvas
 Usage
 -----
 
+First include the obscura.js file on your page
+
+	<script type="text/javascript" src="path/to/obscura.js"></script>
+
 Obscura can be used in two different ways.  You can either use it with an `img` element already on the page, or with an image on file.
 
 To create a new Obscura instance do the following:
@@ -82,7 +86,7 @@ Adds a reflection to the image. Takes 3 optional parameters:
 - `gap` Defines the distance between the bottom of the image and the start of the reflection. Defaults to `0`.
 - `reflectionAmount` Defines the size of the reflection as a percentage of the original image. Defaults to `0.25`.
 
-##setUpImageData###
+###setUpImageData###
 
 	camera.setUpImageData();
 
