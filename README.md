@@ -74,4 +74,10 @@ Flips the image across the specified axis.  If no parameter is passed it will de
 
 ###Reflect###
 
-	camera.reflect()
+	camera.reflect([alphaStart[,gap[,reflectionAmount]]]);
+	
+Adds a reflection to the image. Takes 3 optional parameters:
+
+- `alphaStart` Specifies the initial transparency percentage that the reflection will fade from. Defaults to `0.5`.
+- `gap` Defines the distance between the bottom of the image and the start of the reflection. Defaults to `0`.
+- `reflectionAmount` Defines the size of the reflection as a percentage of the original image. Defaults to `0.25`.
