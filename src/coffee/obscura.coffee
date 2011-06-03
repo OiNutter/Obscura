@@ -82,9 +82,7 @@ obscura = (img,target=null) ->
 				newScale.h = scale.h
 				
 			@dimensions = newScale unless crop
-				
-		
-		
+						
 		@load(0,0,newScale.w,newScale.h)
 		@context.restore()
 		return @
