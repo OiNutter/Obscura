@@ -21,14 +21,13 @@ obscura = (img,target=null) ->
 		@canvas.width = @canvas.height = if @dimensions.w>@dimensions.h then @dimensions.w*2 else @dimensions.h*2
 		
 		#initial load of image
-		@load(0,0,@image.width,@image.height,@image.width,@image.height,@image);
+		@load(0,0,@image.width,@image.height,@image);
 		
 	###
 	load image
 	###
-	@load =(x=0,y=0,w=@image.width,h=@image.height,cw,ch,image)=>
+	@load =(x=0,y=0,w=@image.width,h=@image.height,image=@canvas)=>
 		@context.globalCompositeOperation = "copy";
-		image = image ? @canvas
 		@context.drawImage(image,0,0,@imageDimensions.w,@imageDimensions.h,x,y,w,h)
 		@imageDimensions = {w,h}
 		@render()
@@ -84,6 +83,8 @@ obscura = (img,target=null) ->
 			@dimensions = newScale unless crop
 						
 		@load(0,0,newScale.w,newScale.h)
+		@render()
+		@imageDimensions = @dimensions
 		@context.restore()
 		return @
 	
@@ -104,6 +105,7 @@ obscura = (img,target=null) ->
 	Resizes an image to fit completely into a given space
 	###
 	@fit = (w,h) =>
+		@context.save()
 		return @ if w>@canvas.width and h>@canvas.height
 						
 		if w<h or @canvas.width > @canvas.height or (w is h and @canvas.height > @canvas.width)
@@ -112,6 +114,9 @@ obscura = (img,target=null) ->
 			w = (h/@canvas.height)*@canvas.width;
 		
 		@load(0,0,w,h)
+		@imageDimensions = @dimensions = {w,h}
+		@render()
+		@context.restore()
 		return @
 	
 	###

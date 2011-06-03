@@ -24,12 +24,12 @@
       };
       this.imageDimensions = this.dimensions;
       this.canvas.width = this.canvas.height = this.dimensions.w > this.dimensions.h ? this.dimensions.w * 2 : this.dimensions.h * 2;
-      return this.load(0, 0, this.image.width, this.image.height, this.image.width, this.image.height, this.image);
+      return this.load(0, 0, this.image.width, this.image.height, this.image);
     }, this);
     /*
     	load image
     	*/
-    this.load = __bind(function(x, y, w, h, cw, ch, image) {
+    this.load = __bind(function(x, y, w, h, image) {
       if (x == null) {
         x = 0;
       }
@@ -42,8 +42,10 @@
       if (h == null) {
         h = this.image.height;
       }
+      if (image == null) {
+        image = this.canvas;
+      }
       this.context.globalCompositeOperation = "copy";
-      image = image != null ? image : this.canvas;
       this.context.drawImage(image, 0, 0, this.imageDimensions.w, this.imageDimensions.h, x, y, w, h);
       this.imageDimensions = {
         w: w,
@@ -108,6 +110,8 @@
         }
       }
       this.load(0, 0, newScale.w, newScale.h);
+      this.render();
+      this.imageDimensions = this.dimensions;
       this.context.restore();
       return this;
     }, this);
@@ -135,6 +139,7 @@
     	Resizes an image to fit completely into a given space
     	*/
     this.fit = __bind(function(w, h) {
+      this.context.save();
       if (w > this.canvas.width && h > this.canvas.height) {
         return this;
       }
@@ -144,6 +149,12 @@
         w = (h / this.canvas.height) * this.canvas.width;
       }
       this.load(0, 0, w, h);
+      this.imageDimensions = this.dimensions = {
+        w: w,
+        h: h
+      };
+      this.render();
+      this.context.restore();
       return this;
     }, this);
     /*
