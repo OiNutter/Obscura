@@ -70,7 +70,7 @@ For the exact center you can just use center once.  I will be adding the facilit
 
 	camera.flip([direction]);
 
-Flips the image across the specified axis.  If no parameter is passed it will default to 'horizontal', other option is 'vertial'.
+Flips the image across the specified axis.  If no parameter is passed it will default to `'horizontal'`, other option is `'vertical'`.
 
 ###Reflect###
 
@@ -81,3 +81,52 @@ Adds a reflection to the image. Takes 3 optional parameters:
 - `alphaStart` Specifies the initial transparency percentage that the reflection will fade from. Defaults to `0.5`.
 - `gap` Defines the distance between the bottom of the image and the start of the reflection. Defaults to `0`.
 - `reflectionAmount` Defines the size of the reflection as a percentage of the original image. Defaults to `0.25`.
+
+##setUpImageData###
+
+	camera.setUpImageData();
+
+Internally used method that sets internal variables and calls the initial load of the image.
+
+###Load###
+
+	camera.load([x[,y[,w[,h,[,image]]]]]]]);
+
+Internal method used to load the image source onto the internal canvas object for manipulation.  Takes 5 optional parameters.
+
+- `x` Specifies the initial x coordinate to load from on the original image.  Defaults to `0`.
+- `y` Specifies the initial y coordinate to load from on the original image.  Defaults to `0`.
+- `w` Specifies the width of the slice to take from the inital image.  Defaults to the original image width.
+- `h` Specifies the height of the slice to take from the inital image.  Defaults to the original image height.
+- `image` Defines the source image to load from.  Defaults to the internal canvas object.
+
+###Render###
+
+	camera.render();
+
+Internal method that renders the updated image to the target canvas.  All manipulation methods call this before returning.  Generally shouldn't need to be called manually.
+
+###Save###
+
+	camera.save();
+
+Returns the manipulated image as a base64 encoded data url string.  Can be used to load the image into an image element, or to save the image to file in conjunction with the server side solution of your choice.
+
+###onLoad###
+
+	camera.onLoad = function(){
+							console.log('loaded');
+						};
+
+Allows you to specify a callback to be called once the source image is loaded.  Used when passing a file name to the constructor method instead of an image element.
+
+Properties
+----------
+
+Obscura uses a number of interal properties that can be accessed to give you information about the image.
+
+- `target` The target canvas that Obscura will render to.  If not an on page element Obscura will create an internal object to use.
+- `canvas` Obscura's internal canvas object that the manipulations are performed on.
+- `context` The 2d context of Obscura's internal canvas object.
+- `imageDimensions` The current dimensions of the image.  Is an object in the form `{w:width,h:height}`
+- `dimensions` The new dimensions of the image.  Generally the same as `imageDimensions` but will be changed during the manipulation process.
