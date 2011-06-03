@@ -27,7 +27,7 @@ obscura = (img,target=null) ->
 	load image
 	###
 	@load =(x=0,y=0,w=@image.width,h=@image.height,image=@canvas)=>
-		@context.globalCompositeOperation = "copy";
+		@context.globalCompositeOperation = "copy"
 		@context.drawImage(image,0,0,@imageDimensions.w,@imageDimensions.h,x,y,w,h)
 		@imageDimensions = {w,h}
 		@render()
@@ -37,8 +37,11 @@ obscura = (img,target=null) ->
 	render edited image to target
 	###
 	@render = =>
-		@target.width = @dimensions.w
-		@target.height = @dimensions.h
+		#@target.width = @dimensions.w
+		#@target.height = @dimensions.h
+		@target.height = @target.width = 1000
+		@target.getContext('2d').clearRect(0,0,@target.width,@target.height)
+		@target.getContext('2d').globalCompositeOperation = "copy"
 		@target.getContext('2d').drawImage(@canvas,0,0)
 		return @
 	
@@ -159,7 +162,9 @@ obscura = (img,target=null) ->
 		@dimensions.h = ch
 		@context.translate(x,y)
 		@context.rotate(angle * Math.PI/180)
+		@context.clearRect(0,0,@canvas.width,@canvas.height)
 		@context.drawImage(@canvas,0,0,w,h,-x2,-y2,w,h)
+		
 		@imageDimensions = @dimensions
 		@context.restore()
 		@render()
@@ -259,7 +264,9 @@ obscura = (img,target=null) ->
 	else
 		@image = document.querySelector(img)
 		@setUpImageData()
-			
+	
+	document.body.appendChild(@canvas)
+	
 	return this
 				
 root.obscura = obscura

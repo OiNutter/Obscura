@@ -58,8 +58,9 @@
     	render edited image to target
     	*/
     this.render = __bind(function() {
-      this.target.width = this.dimensions.w;
-      this.target.height = this.dimensions.h;
+      this.target.height = this.target.width = 1000;
+      this.target.getContext('2d').clearRect(0, 0, this.target.width, this.target.height);
+      this.target.getContext('2d').globalCompositeOperation = "copy";
       this.target.getContext('2d').drawImage(this.canvas, 0, 0);
       return this;
     }, this);
@@ -204,6 +205,7 @@
       this.dimensions.h = ch;
       this.context.translate(x, y);
       this.context.rotate(angle * Math.PI / 180);
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.context.drawImage(this.canvas, 0, 0, w, h, -x2, -y2, w, h);
       this.imageDimensions = this.dimensions;
       this.context.restore();
@@ -310,6 +312,7 @@
       this.image = document.querySelector(img);
       this.setUpImageData();
     }
+    document.body.appendChild(this.canvas);
     return this;
   };
   root.obscura = obscura;
