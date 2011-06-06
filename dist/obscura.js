@@ -43,7 +43,7 @@
         h = this.image.height;
       }
       if (image == null) {
-        image = this.canvas;
+        image = this.target;
       }
       this.context.globalCompositeOperation = "copy";
       this.context.drawImage(image, 0, 0, this.imageDimensions.w, this.imageDimensions.h, x, y, w, h);
@@ -60,7 +60,9 @@
     this.render = __bind(function() {
       this.target.width = this.dimensions.w;
       this.target.height = this.dimensions.h;
+      this.target.getContext('2d').globalCompositeOperation = "copy";
       this.target.getContext('2d').drawImage(this.canvas, 0, 0);
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
       return this;
     }, this);
     /*
@@ -109,7 +111,7 @@
           this.dimensions = newScale;
         }
       }
-      this.load(0, 0, newScale.w, newScale.h);
+      this.context.drawImage(this.target, 0, 0, newScale.w, newScale.h);
       this.render();
       this.imageDimensions = this.dimensions;
       this.context.restore();
@@ -126,7 +128,7 @@
         w: w,
         h: h
       };
-      this.context.drawImage(this.canvas, x, y, w, h, 0, 0, w, h);
+      this.context.drawImage(this.target, x, y, w, h, 0, 0, w, h);
       this.imageDimensions = {
         w: w,
         h: h
@@ -148,7 +150,7 @@
       } else if (h < w || this.canvas.height > this.canvas.width || (h === w && this.canvas.width > this.canvas.height)) {
         w = (h / this.canvas.height) * this.canvas.width;
       }
-      this.load(0, 0, w, h);
+      this.context.drawImage(this.target, 0, 0, w, h);
       this.imageDimensions = this.dimensions = {
         w: w,
         h: h
@@ -204,7 +206,8 @@
       this.dimensions.h = ch;
       this.context.translate(x, y);
       this.context.rotate(angle * Math.PI / 180);
-      this.context.drawImage(this.canvas, 0, 0, w, h, -x2, -y2, w, h);
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.context.drawImage(this.target, 0, 0, w, h, -x2, -y2, w, h);
       this.imageDimensions = this.dimensions;
       this.context.restore();
       this.render();
@@ -225,7 +228,7 @@
         this.context.translate(0, this.dimensions.h);
         this.context.scale(1, -1);
       }
-      this.context.drawImage(this.canvas, 0, 0);
+      this.context.drawImage(this.target, 0, 0);
       this.context.restore();
       this.render();
       return this;
@@ -262,6 +265,7 @@
         y: 0
       };
       _ref = this.imageDimensions, w = _ref.w, h = _ref.h;
+      this.context.drawImage(this.target, 0, 0);
       if (direction === 'vertical') {
         h = this.imageDimensions.h * reflectionAmount;
         this.dimensions.h = this.imageDimensions.h + gap + h;
@@ -273,7 +277,7 @@
         startPos.y = this.imageDimensions.h - h;
       }
       gradientImageData = gradientContext.getImageData(0, 0, w, h);
-      gradientContext.drawImage(this.canvas, startPos.x, startPos.y, w, h, 0, 0, w, h);
+      gradientContext.drawImage(this.target, startPos.x, startPos.y, w, h, 0, 0, w, h);
       imageData = this.context.getImageData(0, 0, w, h);
       reflectionImageData = gradientContext.getImageData(0, 0, w, h);
       opacity = 1;

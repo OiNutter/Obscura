@@ -102,7 +102,7 @@ Internal method used to load the image source onto the internal canvas object fo
 - `y` Specifies the initial y coordinate to load from on the original image.  Defaults to `0`.
 - `w` Specifies the width of the slice to take from the inital image.  Defaults to the original image width.
 - `h` Specifies the height of the slice to take from the inital image.  Defaults to the original image height.
-- `image` Defines the source image to load from.  Defaults to the internal canvas object.
+- `image` Defines the source image to load from.  Defaults to the internal target canvas object.
 
 ###Render###
 
