@@ -26,7 +26,7 @@ obscura = (img,target=null) ->
 	###
 	load image
 	###
-	@load =(x=0,y=0,w=@image.width,h=@image.height,image=@canvas)=>
+	@load =(x=0,y=0,w=@image.width,h=@image.height,image=@target)=>
 		@context.globalCompositeOperation = "copy"
 		@context.drawImage(image,0,0,@imageDimensions.w,@imageDimensions.h,x,y,w,h)
 		@imageDimensions = {w,h}
@@ -37,12 +37,11 @@ obscura = (img,target=null) ->
 	render edited image to target
 	###
 	@render = =>
-		#@target.width = @dimensions.w
-		#@target.height = @dimensions.h
-		@target.height = @target.width = 1000
-		@target.getContext('2d').clearRect(0,0,@target.width,@target.height)
+		@target.width = @dimensions.w
+		@target.height = @dimensions.h
 		@target.getContext('2d').globalCompositeOperation = "copy"
 		@target.getContext('2d').drawImage(@canvas,0,0)
+		@context.clearRect(0,0,@canvas.width,@canvas.height)
 		return @
 	
 	###
@@ -85,7 +84,7 @@ obscura = (img,target=null) ->
 				
 			@dimensions = newScale unless crop
 						
-		@load(0,0,newScale.w,newScale.h)
+		@context.drawImage(@target,0,0,newScale.w,newScale.h)
 		@render()
 		@imageDimensions = @dimensions
 		@context.restore()
@@ -98,7 +97,7 @@ obscura = (img,target=null) ->
 		@context.save()
 		size = @dimensions
 		@dimensions = {w,h}
-		@context.drawImage(@canvas,x,y,w,h,0,0,w,h)
+		@context.drawImage(@target,x,y,w,h,0,0,w,h)
 		@imageDimensions = {w,h}
 		@render()
 		@context.restore()
@@ -116,7 +115,7 @@ obscura = (img,target=null) ->
 		else if h<w or @canvas.height>@canvas.width or (h is w and @canvas.width > @canvas.height)
 			w = (h/@canvas.height)*@canvas.width;
 		
-		@load(0,0,w,h)
+		@context.drawImage(@target,0,0,w,h)
 		@imageDimensions = @dimensions = {w,h}
 		@render()
 		@context.restore()
@@ -163,7 +162,7 @@ obscura = (img,target=null) ->
 		@context.translate(x,y)
 		@context.rotate(angle * Math.PI/180)
 		@context.clearRect(0,0,@canvas.width,@canvas.height)
-		@context.drawImage(@canvas,0,0,w,h,-x2,-y2,w,h)
+		@context.drawImage(@target,0,0,w,h,-x2,-y2,w,h)
 		
 		@imageDimensions = @dimensions
 		@context.restore()
@@ -182,7 +181,7 @@ obscura = (img,target=null) ->
 			@context.translate(0,@dimensions.h);
 			@context.scale(1,-1)
 		
-		@context.drawImage(@canvas,0,0)
+		@context.drawImage(@target,0,0)
 		@context.restore()
 		@render()
 		return @
@@ -210,7 +209,7 @@ obscura = (img,target=null) ->
 			y:0
 			
 		{w,h} = @imageDimensions
-		
+		@context.drawImage(@target,0,0)
 		if direction is 'vertical'
 			h = @imageDimensions.h * reflectionAmount
 			@dimensions.h = @imageDimensions.h + gap + h
@@ -223,7 +222,7 @@ obscura = (img,target=null) ->
 				
 		gradientImageData = gradientContext.getImageData(0, 0, w, h);
 				
-		gradientContext.drawImage(@canvas,startPos.x,startPos.y,w,h,0,0,w,h)
+		gradientContext.drawImage(@target,startPos.x,startPos.y,w,h,0,0,w,h)
 		
 		
 		imageData = @context.getImageData(0,0,w,h)
@@ -241,7 +240,7 @@ obscura = (img,target=null) ->
 				col++
 			col=1
 			row++
-			
+		
 		@context.putImageData(reflectionImageData, 0,@imageDimensions.h)
 		
 		@imageDimensions = @dimensions
@@ -264,8 +263,6 @@ obscura = (img,target=null) ->
 	else
 		@image = document.querySelector(img)
 		@setUpImageData()
-	
-	document.body.appendChild(@canvas)
 	
 	return this
 				
