@@ -60,6 +60,9 @@
     this.render = __bind(function() {
       this.target.width = this.dimensions.w;
       this.target.height = this.dimensions.h;
+      if (typeof G_vmlCanvasManager !== 'undefined') {
+        this.target = G_vmlCanvasManager.initElement(this.target);
+      }
       this.target.getContext('2d').globalCompositeOperation = "copy";
       this.target.getContext('2d').drawImage(this.canvas, 0, 0);
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -302,6 +305,9 @@
     }, this);
     this.target = target !== null ? document.querySelector(target) : document.createElement('canvas');
     this.canvas = document.createElement('canvas');
+    if (typeof G_vmlCanvasManager !== 'undefined') {
+      this.canvas = G_vmlCanvasManager.initElement(this.canvas);
+    }
     this.context = this.canvas.getContext('2d');
     if (img.match(fileRegExp)) {
       this.image = new Image();

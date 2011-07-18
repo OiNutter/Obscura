@@ -39,6 +39,10 @@ obscura = (img,target=null) ->
 	@render = =>
 		@target.width = @dimensions.w
 		@target.height = @dimensions.h
+		
+		if typeof(G_vmlCanvasManager) isnt 'undefined'
+			@target = G_vmlCanvasManager.initElement(@target)
+		
 		@target.getContext('2d').globalCompositeOperation = "copy"
 		@target.getContext('2d').drawImage(@canvas,0,0)
 		@context.clearRect(0,0,@canvas.width,@canvas.height)
@@ -252,6 +256,10 @@ obscura = (img,target=null) ->
 	#load element
 	@target = if target isnt null then document.querySelector(target) else document.createElement('canvas')
 	@canvas = document.createElement('canvas')
+	
+	if typeof(G_vmlCanvasManager) isnt 'undefined'
+		@canvas = G_vmlCanvasManager.initElement(@canvas)
+	
 	@context = @canvas.getContext('2d')
 	
 	if img.match(fileRegExp)
