@@ -110,13 +110,14 @@ obscura = (img,target=null) ->
 		@context.save()
 		return @ if w>@canvas.width and h>@canvas.height
 						
-		if w<h or @canvas.width > @canvas.height or (w is h and @canvas.height > @canvas.width)
-			h = (w/@canvas.width)*@canvas.height
-		else if h<w or @canvas.height>@canvas.width or (h is w and @canvas.width > @canvas.height)
-			w = (h/@canvas.height)*@canvas.width;
+		if w<h or @imageDimensions.w > @imageDimensions.h or (w is h and @imageDimensions.h > @imageDimensions.w)
+			h = (w/@imageDimensions.w)*@imageDimensions.h
+		else if h<w or @imageDimensions.h>@imageDimensions.w or (h is w and @imageDimensions.w > @imageDimensions.h)
+			w = (h/@imageDimensions.h)*@imageDimensions.w;
 		
+		@dimensions = {w,h}
 		@context.drawImage(@target,0,0,w,h)
-		@imageDimensions = @dimensions = {w,h}
+		@imageDimensions = @dimensions
 		@render()
 		@context.restore()
 		return @

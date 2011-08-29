@@ -1,7 +1,7 @@
 (function() {
   var obscura, root;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  root = typeof exports != "undefined" && exports !== null ? exports : this;
+  root = typeof exports !== "undefined" && exports !== null ? exports : this;
   obscura = function(img, target) {
     var fileRegExp;
     if (target == null) {
@@ -145,16 +145,17 @@
       if (w > this.canvas.width && h > this.canvas.height) {
         return this;
       }
-      if (w < h || this.canvas.width > this.canvas.height || (w === h && this.canvas.height > this.canvas.width)) {
-        h = (w / this.canvas.width) * this.canvas.height;
-      } else if (h < w || this.canvas.height > this.canvas.width || (h === w && this.canvas.width > this.canvas.height)) {
-        w = (h / this.canvas.height) * this.canvas.width;
+      if (w < h || this.imageDimensions.w > this.imageDimensions.h || (w === h && this.imageDimensions.h > this.imageDimensions.w)) {
+        h = (w / this.imageDimensions.w) * this.imageDimensions.h;
+      } else if (h < w || this.imageDimensions.h > this.imageDimensions.w || (h === w && this.imageDimensions.w > this.imageDimensions.h)) {
+        w = (h / this.imageDimensions.h) * this.imageDimensions.w;
       }
-      this.context.drawImage(this.target, 0, 0, w, h);
-      this.imageDimensions = this.dimensions = {
+      this.dimensions = {
         w: w,
         h: h
       };
+      this.context.drawImage(this.target, 0, 0, w, h);
+      this.imageDimensions = this.dimensions;
       this.render();
       this.context.restore();
       return this;

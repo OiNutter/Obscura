@@ -46,6 +46,9 @@
 			<h1>Scaled to 50%</h1>
 			<canvas id="scaled"></canvas>
 			
+			<h1>Fit to 800 x 400</h1>
+			<canvas id="fit"></canvas>
+			
 			<h1>Cropped to 250 x 250 from 20,20</h1>
 			<canvas id="cropped"></canvas>
 			
@@ -72,6 +75,8 @@
 			
 			var scaled = new obscura('#orig','#scaled');
 			scaled.resize('50%');
+			
+			var fit = new obscura('#orig','#fit').fit(800,400);
 			
 			var cropped = new obscura('#orig','#cropped');
 			cropped.crop(20,20,250,250);
