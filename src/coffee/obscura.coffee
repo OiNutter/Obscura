@@ -190,65 +190,64 @@ obscura = (img,target=null) ->
 	###
 	Reflection
 	###
-	@reflect = (alphaStart=0.5,gap=0,reflectionAmount=0.25,direction = 'vertical') =>
-	
-		gradientCanvas = document.createElement('canvas')
-		
-		gradientCanvas.width = @imageDimensions.w
-		gradientCanvas.height = @imageDimensions.h
-				
-		gradientContext = gradientCanvas.getContext('2d')
-		@context.restore()
-		@context.globalCompositeOperation = 'source-over'
-				
-		startPos = 
-			x:0
-			y:0
-		
-		targetPos =
-			x:0
-			y:0
-			
-		{w,h} = @imageDimensions
-		@context.drawImage(@target,0,0)
-		if direction is 'vertical'
-			h = @imageDimensions.h * reflectionAmount
-			@dimensions.h = @imageDimensions.h + gap + h
-			gradientContext.translate(0,h)
-			gradientContext.scale(1,-1)
-			@context.translate(0,h)
-			@context.scale(1,-1)
-			targetPos.y = @dimensions.h
-			startPos.y = @imageDimensions.h-h
-				
-		gradientImageData = gradientContext.getImageData(0, 0, w, h);
-				
-		gradientContext.drawImage(@target,startPos.x,startPos.y,w,h,0,0,w,h)
-		
-		
-		imageData = @context.getImageData(0,0,w,h)
-		reflectionImageData = gradientContext.getImageData(0,0,w,h)
-		opacity=1		
-			
-		col = 1
-		row = 1;
-		alphaStep = (255*alphaStart)/h
-		until row > h
-			until col > w
-				alpha = reflectionImageData.data[((row*(w*4)) + (col*4)) + 3]
-				alpha = Math.min(alpha,((h-(row-1))*alphaStep))
-				reflectionImageData.data[((row*(w*4)) + (col*4)) + 3] = alpha
-				col++
-			col=1
-			row++
-		
-		@context.putImageData(reflectionImageData, 0,@imageDimensions.h)
-		
-		@imageDimensions = @dimensions
-		
-		@context.save()
-		@render()
-		return @
+	@reflect = (alphaStart=0.5,gap=0,reflectionAmount=0.25,direction = 'vertical')=>
+    @context.save()
+    gradientCanvas = document.createElement('canvas')
+    gradientCanvas.width = @imageDimensions.w
+    gradientCanvas.height = @imageDimensions.h
+    
+    gradientContext = gradientCanvas.getContext('2d')
+    
+    @context.globalCompositeOperation = 'source-over'
+    
+    startPos = 
+      x:0
+      y:0
+    
+    targetPos =
+      x:0
+      y:0
+      
+    {w,h} = @imageDimensions
+    @context.drawImage(@target,0,0)
+    if direction is 'vertical'
+      h = @imageDimensions.h * reflectionAmount
+      @dimensions.h = @imageDimensions.h + gap + h
+      gradientContext.translate(0,h)
+      gradientContext.scale(1,-1)
+      @context.translate(0,h)
+      @context.scale(1,-1)
+      targetPos.y = @dimensions.h
+      startPos.y = @imageDimensions.h-h
+      
+    gradientImageData = gradientContext.getImageData(0, 0, w, h);
+    
+    gradientContext.drawImage(@target,startPos.x,startPos.y,w,h,0,0,w,h)
+    
+    imageData = @context.getImageData(0,0,w,h)
+    reflectionImageData = gradientContext.getImageData(0,0,w,h)
+    opacity=1
+    
+    col = 1
+    row = 1;
+    alphaStep = (255*alphaStart)/h
+    until row > h
+      until col > w
+        alpha = reflectionImageData.data[((row*(w*4)) + (col*4)) + 3]
+        alpha = Math.min(alpha,((h-(row-1))*alphaStep))
+        reflectionImageData.data[((row*(w*4)) + (col*4)) + 3] = alpha
+        col++
+      col=1
+      row++
+      
+    @context.putImageData(reflectionImageData, 0,@imageDimensions.h)
+    
+    @imageDimensions = @dimensions
+    
+    
+    @render()
+    @context.restore()
+    return @
 		
 	#load element
 	@target = if target isnt null then document.querySelector(target) else document.createElement('canvas')

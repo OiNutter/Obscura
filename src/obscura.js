@@ -251,11 +251,11 @@
       if (direction == null) {
         direction = 'vertical';
       }
+      this.context.save();
       gradientCanvas = document.createElement('canvas');
       gradientCanvas.width = this.imageDimensions.w;
       gradientCanvas.height = this.imageDimensions.h;
       gradientContext = gradientCanvas.getContext('2d');
-      this.context.restore();
       this.context.globalCompositeOperation = 'source-over';
       startPos = {
         x: 0,
@@ -297,8 +297,8 @@
       }
       this.context.putImageData(reflectionImageData, 0, this.imageDimensions.h);
       this.imageDimensions = this.dimensions;
-      this.context.save();
       this.render();
+      this.context.restore();
       return this;
     }, this);
     this.target = target !== null ? document.querySelector(target) : document.createElement('canvas');
