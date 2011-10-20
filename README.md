@@ -32,7 +32,7 @@ set the onLoad method like so:
 
 Otherwise it won't work as it will try and call the methods before Obscura's internal image element has loaded the image.
 
-[View Demos](http://oinutter.co.uk/obscura/examples/)
+[View Demos](http://oinutter.github.com/obscura/)
 
 Functions
 ---------
@@ -51,7 +51,7 @@ assume you wish to resize both dimensions to that scale. There are also 2 option
 are equal, it will resize to whichever the largest original dimension is. Defaults to `true`.
 - `crop` A boolean value that defines whether to crop the image on resize if the new proportions are different.  Defaults to `false`.
 
-[View Demo](http://oinutter.co.uk/obscura/examples/#resize)
+[View Demo](http://oinutter.github.com/obscura/#resize)
 
 ###Fit###
 
@@ -59,7 +59,7 @@ are equal, it will resize to whichever the largest original dimension is. Defaul
 
 Similar to Resize, Fit will resize an image to fit into the area defined by the width and height values provided.  Priority is given to the largest original dimension.
 
-[View Demo](http://oinutter.co.uk/obscura/examples/#fit)
+[View Demo](http://oinutter.github.com/obscura/#fit)
 
 ###Crop###
 
@@ -67,7 +67,7 @@ Similar to Resize, Fit will resize an image to fit into the area defined by the 
 
 Crops an image to the given dimensions, from the given start co-ordinates.
 
-[View Demo](http://oinutter.co.uk/obscura/examples/#crop)
+[View Demo](http://oinutter.github.com/obscura/#crop)
 
 ###Rotate###
 
@@ -78,7 +78,7 @@ Rotates an image by the specified amount of degrees.  Takes one optional paramet
 - `center` Defines the center of rotation.  Currently just takes a string e.g. `'top right'`.  The string can be formatted any way as long as it contains one of the valid x and y strings in it.  Valid strings are `'top'`, `'bottom'`, `'left'`, `'right'` and `'center'`. 
 For the exact center you can just use center once.  I will be adding the facility to specify co-ordinates in the next version. Defaults to `'center'`.
 
-[View Demo](http://oinutter.co.uk/obscura/examples/#rotate)
+[View Demo](http://oinutter.github.com/obscura/#rotate)
 
 ###Flip###
 
@@ -86,7 +86,7 @@ For the exact center you can just use center once.  I will be adding the facilit
 
 Flips the image across the specified axis.  If no parameter is passed it will default to `'horizontal'`, other option is `'vertical'`.
 
-[View Demo](http://oinutter.co.uk/obscura/examples/#flip)
+[View Demo](http://oinutter.github.com/obscura/#flip)
 
 ###Reflect###
 
@@ -98,7 +98,7 @@ Adds a reflection to the image. Takes 3 optional parameters:
 - `gap` Defines the distance between the bottom of the image and the start of the reflection. Defaults to `0`.
 - `reflectionAmount` Defines the size of the reflection as a percentage of the original image. Defaults to `0.25`.
 
-[View Demo](http://oinutter.co.uk/obscura/examples/#reflect)
+[View Demo](http://oinutter.github.com/obscura/#reflect)
 
 ###setUpImageData###
 
