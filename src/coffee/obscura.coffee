@@ -211,30 +211,31 @@ obscura = (img,target=null) ->
         @context.globalCompositeOperation = 'source-over'
 
         startPos =
-          x:0
-          y:0
+            x:0
+            y:0
 
         targetPos =
-          x:0
-          y:0
+            x:0
+            y:0
 
+        currentDimensions = JSON.parse(JSON.stringify(@imageDimensions))
         {w,h} = @imageDimensions
         @context.drawImage(@target,0,0)
+
         if direction is 'vertical'
-          h = @imageDimensions.h * reflectionAmount
-          @dimensions.h = @imageDimensions.h + gap + h
-          gradientContext.translate(0,h)
-          gradientContext.scale(1,-1)
-          @context.translate(0,h)
-          @context.scale(1,-1)
-          targetPos.y = @dimensions.h
-          startPos.y = @imageDimensions.h-h
+            h = @imageDimensions.h * reflectionAmount
+            @dimensions.h = @imageDimensions.h + gap + h
+            gradientContext.translate(0,h)
+            gradientContext.scale(1,-1)
+            @context.translate(0,h)
+            @context.scale(1,-1)
+            targetPos.y = @dimensions.h
+            startPos.y = currentDimensions.h-h
 
-        gradientImageData = gradientContext.getImageData(0, 0, w, h);
-
+        w = Math.floor(w)
+        h = Math.floor(h)
         gradientContext.drawImage(@target,startPos.x,startPos.y,w,h,0,0,w,h)
 
-        imageData = @context.getImageData(0,0,w,h)
         reflectionImageData = gradientContext.getImageData(0,0,w,h)
         opacity=1
 
@@ -242,18 +243,17 @@ obscura = (img,target=null) ->
         row = 1;
         alphaStep = (255*alphaStart)/h
         until row > h
-          until col > w
-            alpha = reflectionImageData.data[((row*(w*4)) + (col*4)) + 3]
-            alpha = Math.min(alpha,((h-(row-1))*alphaStep))
-            reflectionImageData.data[((row*(w*4)) + (col*4)) + 3] = alpha
-            col++
-          col=1
-          row++
+            until col > w
+                alpha = reflectionImageData.data[((row*(w*4)) + (col*4)) + 3]
+                alpha = Math.min(alpha,((h-(row-1))*alphaStep))
+                reflectionImageData.data[((row*(w*4)) + (col*4)) + 3] = alpha
+                col++
+            col=1
+            row++
 
-        @context.putImageData(reflectionImageData, 0,@imageDimensions.h)
+        @context.putImageData(reflectionImageData, 0,currentDimensions.h)
 
         @imageDimensions = @dimensions
-
 
         @render()
         @context.restore()
