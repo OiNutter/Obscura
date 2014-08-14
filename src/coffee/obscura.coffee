@@ -129,11 +129,21 @@ obscura = (img,target=null) ->
         @context.restore();
         @context.save();
         {w,h}=@dimensions
-        if angle is 90 or angle is 120
-            {cw,ch} = {h,w}
-        else if angle isnt 180 or angle isnt 360
-            cw = w*Math.cos(angle * Math.PI/180) + h*Math.sin(angle * Math.PI/180)
-            ch = h*Math.cos(angle * Math.PI/180) + w*Math.sin(angle * Math.PI/180)
+        cw = w
+        ch = h
+        if angle is 90 or angle is 270
+            cw = h
+            ch = w
+        else if angle isnt 180 and angle isnt 360
+            theta = angle % 90
+            quadrant = Math.floor(angle/90)
+
+            if quadrant is 0 or quadrant is 2
+                cw = w*Math.cos(theta * (Math.PI/180)) + h*Math.sin(theta * (Math.PI/180))
+                ch = h*Math.cos(theta * (Math.PI/180)) + w*Math.sin(theta * (Math.PI/180))
+            else
+                ch = w*Math.cos(theta * (Math.PI/180)) + h*Math.sin(theta * (Math.PI/180))
+                cw = h*Math.cos(theta * (Math.PI/180)) + w*Math.sin(theta * (Math.PI/180))
 
         @context.globalCompositeOperation = "copy";
 
@@ -164,7 +174,7 @@ obscura = (img,target=null) ->
         @context.rotate(angle * Math.PI/180)
         @context.clearRect(0,0,@canvas.width,@canvas.height)
         @context.drawImage(@target,0,0,w,h,-x2,-y2,w,h)
-
+        @context.translate(x,y)
         @imageDimensions = @dimensions
         @context.restore()
         @render()
