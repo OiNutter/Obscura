@@ -2,102 +2,102 @@
 
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>index</title>
-	<style type="text/css">
-		body{
-			background:#999;
-		}
-		
-		canvas{
-			background:#666;
-		}
-								
-		#container{
-			width:1080px;
-			position:relative;
-			margin:auto auto 50px;
-		}
-		
-		#col-alpha{
-			width:499px;
-			float:left;
-			padding: 0 20px;
-			border-right:1px dashed #666;
-		}
-		
-		#col-beta{
-			width:500px;
-			padding: 0 20px;
-			float:right;
-		}
-	</style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>index</title>
+    <style type="text/css">
+        body{
+            background:#999;
+        }
+
+        canvas{
+            background:#666;
+        }
+
+        #container{
+            width:1080px;
+            position:relative;
+            margin:auto auto 50px;
+        }
+
+        #col-alpha{
+            width:499px;
+            float:left;
+            padding: 0 20px;
+            border-right:1px dashed #666;
+        }
+
+        #col-beta{
+            width:500px;
+            padding: 0 20px;
+            float:right;
+        }
+    </style>
 </head>
 <body>
-	<div id="container">
-		<div id="col-alpha">
-			<h1>Original</h1>
-			<img src="img/Tycho_Celchu_helmet.jpg" id="orig"/>	
-		</div>
-		<div id="col-beta">
-			<h1>Resized to 300 x 300 (Will resize so largest dimension is that size)</h1>
-			<canvas id="resized"></canvas>
-			
-			<h1>Scaled to 50%</h1>
-			<canvas id="scaled"></canvas>
-			
-			<h1>Fit to 800 x 400</h1>
-			<canvas id="fit"></canvas>
-			
-			<h1>Cropped to 250 x 250 from 20,20</h1>
-			<canvas id="cropped"></canvas>
-			
-			<h1>Rotated 30 deg</h1>
-			<canvas id="rotated"></canvas>
-			
-			<h1>Flipped Horizontally</h1>
-			<canvas id="flipped-h"></canvas>
-			
-			<h1>Flipped Vertically</h1>
-			<canvas id="flipped-v"></canvas>
-			
-			<h1>Reflection</h1>
-			<canvas id="reflected"></canvas>
-			
-		</div>
-		<br style="clear:both"/>
-	</div>
-	<script language="Javascript" type="text/javascript" src="../../src/obscura.js"></script>
-	<script type="text/javascript">
-		window.onload = function(){	
-			var resized = new obscura('#orig','#resized').resize(300);
-			//resized.resize(300);
-			
-			var scaled = new obscura('#orig','#scaled');
-			scaled.resize('50%');
-			
-			var fit = new obscura('#orig','#fit').fit(800,400);
-			
-			var cropped = new obscura('#orig','#cropped');
-			cropped.crop(20,20,250,250);
-			
-			var rotated = new obscura('#orig','#rotated');
-			rotated.rotate(30).resize(450);
-			
-			var flippedh = new obscura('#orig','#flipped-h');
-			flippedh.flip();
-			
-			var flippedv = new obscura('#orig','#flipped-v');
-			flippedv.flip('vertical');
-			
-			var reflected = new obscura('#orig','#reflected');
-			reflected.resize('50%').reflect();
-				
-			var loaded = new obscura('img/Wedge_Antilles_helmet.jpg');
-			loaded.onLoad = function(){
-				//window.open(loaded.reflect().save());
-			};
-		};
-	</script>
+    <div id="container">
+        <div id="col-alpha">
+            <h1>Original</h1>
+            <img src="img/Tycho_Celchu_helmet.jpg" id="orig"/>
+        </div>
+        <div id="col-beta">
+            <h1>Resized to 300 x 300 (Will resize so largest dimension is that size)</h1>
+            <canvas id="resized"></canvas>
+
+            <h1>Scaled to 50%</h1>
+            <canvas id="scaled"></canvas>
+
+            <h1>Fit to 800 x 400</h1>
+            <canvas id="fit"></canvas>
+
+            <h1>Cropped to 250 x 250 from 20,20</h1>
+            <canvas id="cropped"></canvas>
+
+            <h1>Rotated 30 deg</h1>
+            <canvas id="rotated"></canvas>
+
+            <h1>Flipped Horizontally</h1>
+            <canvas id="flipped-h"></canvas>
+
+            <h1>Flipped Vertically</h1>
+            <canvas id="flipped-v"></canvas>
+
+            <h1>Reflection</h1>
+            <canvas id="reflected"></canvas>
+
+        </div>
+        <br style="clear:both"/>
+    </div>
+    <script language="Javascript" type="text/javascript" src="../../src/obscura.js"></script>
+    <script type="text/javascript">
+        window.onload = function(){
+            var resized = new obscura('#orig','#resized').resize(300);
+            //resized.resize(300);
+
+            var scaled = new obscura('#orig','#scaled');
+            scaled.resize('50%');
+
+            var fit = new obscura('#orig','#fit').fit(800,400);
+
+            var cropped = new obscura('#orig','#cropped');
+            cropped.crop(20,20,250,250);
+
+            var rotated = new obscura('#orig','#rotated');
+            rotated.rotate(180).resize(450);
+
+            var flippedh = new obscura('#orig','#flipped-h');
+            flippedh.flip();
+
+            var flippedv = new obscura('#orig','#flipped-v');
+            flippedv.flip('vertical');
+
+            var reflected = new obscura('#orig','#reflected');
+            reflected.resize('50%').reflect();
+
+            var loaded = new obscura('img/Wedge_Antilles_helmet.jpg');
+            loaded.onLoad = function(){
+                //window.open(loaded.reflect().save());
+            };
+        };
+    </script>
 </body>
 </html>
